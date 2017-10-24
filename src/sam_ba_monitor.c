@@ -219,7 +219,7 @@ void sam_ba_monitor_run(void) {
                         // Erase the flash memory starting from ADDR to the end
                         // of flash.
 
-                        flash_erase_to_end(current_number);
+                        flash_erase_to_end(current_number + FW_OFFSET);
 
                         // Notify command completed
                         cdc_write_buf("X\n\r", 3);
@@ -242,7 +242,7 @@ void sam_ba_monitor_run(void) {
                             src_buff_addr = (void *)ptr_data;
 
                         } else {
-                            flash_write_words((void *)ptr_data, src_buff_addr, current_number / 4);
+                            flash_write_words((void *)(ptr_data + FW_OFFSET), src_buff_addr, current_number / 4);
                         }
 
                         // Notify command completed
@@ -257,7 +257,7 @@ void sam_ba_monitor_run(void) {
                         // Syntax: Z[START_ADDR],[SIZE]#
                         // Returns: Z[CRC]#
 
-                        uint8_t *data = (uint8_t *)ptr_data;
+                        uint8_t *data = (uint8_t *)(ptr_data + FW_OFFSET);
                         uint32_t size = current_number;
                         uint16_t crc = 0;
                         uint32_t i = 0;

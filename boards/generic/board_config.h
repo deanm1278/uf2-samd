@@ -1,7 +1,7 @@
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H
 
-#define __SAMD21G18A__ 1
+#define __SAMD21E17A__ 1
 
 #define VENDOR_NAME "Generic Corp."
 #define PRODUCT_NAME "SAMD21 Board"

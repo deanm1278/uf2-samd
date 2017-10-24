@@ -96,6 +96,9 @@ void flash_write(void) {
 #define QUICK_FLASH 1
 
 void flash_write_row(uint32_t *dst, uint32_t *src) {
+
+dst = (uint32_t *) ((uint32_t) dst + FW_OFFSET);
+
 #if QUICK_FLASH
     bool src_different = false;
     for (int i = 0; i < FLASH_ROW_SIZE / 4; ++i) {

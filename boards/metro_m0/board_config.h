@@ -1,7 +1,7 @@
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H
 
-#define __SAMD21G18A__ 1
+//#define __SAMD21G18A__ 1
 
 #define VENDOR_NAME "Adafruit Industries"
 #define PRODUCT_NAME "Metro M0"
@@ -18,5 +18,7 @@
 
 #define BOARD_NEOPIXEL_PIN PIN_PA30
 #define BOARD_NEOPIXEL_COUNT 1
+
+#define FLASH_NUM_ROWS 512
 
 #endif
