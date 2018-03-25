@@ -55,7 +55,7 @@ INCLUDES += -Ilib/samd51/include/
 endif
 
 COMMON_SRC = \
-	src/flash_$(CHIP_FAMILY).c \
+	src/spi_flash_$(CHIP_FAMILY).c \
 	src/init_$(CHIP_FAMILY).c \
 	src/startup_$(CHIP_FAMILY).c \
 	src/usart_sam_ba.c \

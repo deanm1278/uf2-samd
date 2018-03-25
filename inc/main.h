@@ -43,6 +43,6 @@
 #define BOOT_USART_PAD0 PINMUX_PA22C_SERCOM3_PAD0
 #endif
 
-#define FW_OFFSET (0xF000 - 0x2000) //The address the firmware will be written to
+#define FW_OFFSET (-0x2000) //The address the firmware will be written to
 
 #endif // _MAIN_H_
