@@ -395,7 +395,7 @@ void system_init(void) {
 
     // Add GCLK_GENCTRL_OE below to output GCLK0 on the SWCLK pin.
     GCLK->GENCTRL.reg =
-        GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC_DFLL48M | GCLK_GENCTRL_IDC | GCLK_GENCTRL_GENEN;
+        GCLK_GENCTRL_ID(0) | GCLK_GENCTRL_SRC_DFLL48M | GCLK_GENCTRL_IDC | GCLK_GENCTRL_GENEN | GCLK_GENCTRL_OE;
     gclk_sync();
 
     SysTick_Config(1000);

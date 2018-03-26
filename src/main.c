@@ -147,6 +147,45 @@ static void check_start_application(void) {
 
     /* Jump to application Reset Handler in the application */
     asm("bx %0" ::"r"(app_start_address));
+
+}
+
+//set clock output enable and clear conflict pins to boot dsp. This function doesn't exit and is used for testing only
+static void boot_bfin()
+{
+    uint32_t port;
+    uint8_t pin;
+
+    /* Mask 6th bit in pin number to check whether it is greater than 32
+     * i.e., PORTB pin */
+    port = (PINMUX_PA27H_GCLK_IO0 & 0x200000) >> 21;
+    pin = PINMUX_PA27H_GCLK_IO0 >> 16;
+    PORT->Group[port].PINCFG[(pin - (port * 32))].bit.PMUXEN = 1;
+    PORT->Group[port].PMUX[(pin - (port * 32)) / 2].reg &= ~(0xF << (4 * (pin & 0x01u)));
+    PORT->Group[port].PMUX[(pin - (port * 32)) / 2].reg |= (PINMUX_PA27H_GCLK_IO0 & 0xFF)
+                                                           << (4 * (pin & 0x01u));
+
+    port = (SPI_FLASH_MISO & 0x200000) >> 21;
+    pin = SPI_FLASH_MISO >> 16;
+    PORT->Group[port].PINCFG[(pin - (port * 32))].bit.PMUXEN = 0;
+
+    port = (SPI_FLASH_MOSI & 0x200000) >> 21;
+    pin = SPI_FLASH_MOSI >> 16;
+    PORT->Group[port].PINCFG[(pin - (port * 32))].bit.PMUXEN = 0;
+
+    port = (SPI_FLASH_SCLK & 0x200000) >> 21;
+    pin = SPI_FLASH_SCLK >> 16;
+    PORT->Group[port].PINCFG[(pin - (port * 32))].bit.PMUXEN = 0;
+
+    //for now take chip out of reset and stay here
+    PINOP(PIN_PA07, DIRCLR);
+    PINOP(PIN_PA16, DIRCLR);
+    PINOP(PIN_PA18, DIRCLR);
+    PINOP(PIN_PA19, DIRCLR);
+    PINOP(DSP_RESET_PIN, DIRSET);
+    PINOP(DSP_RESET_PIN, OUTSET);
+
+    while(1);
 }
 
 extern char _etext;
@@ -178,6 +217,8 @@ int main(void) {
     /* We have determined we should stay in the monitor. */
     /* System initialization */
     system_init();
+
+    boot_bfin();
 
     __DMB();
     __enable_irq();
