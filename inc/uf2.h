@@ -257,10 +257,12 @@ void handoverPrep(void);
 #define CONCAT_0(a, b) CONCAT_1(a, b)
 #define STATIC_ASSERT(e) enum { CONCAT_0(_static_assert_, __LINE__) = 1 / ((e) ? 1 : 0) }
 
+#if 0 //not necessary for dsp feather
 #ifdef SAMD21
 STATIC_ASSERT(FLASH_ROW_SIZE == FLASH_PAGE_SIZE * 4);
 STATIC_ASSERT(FLASH_ROW_SIZE == NVMCTRL_ROW_SIZE);
 STATIC_ASSERT(FLASH_NUM_ROWS * 4 == FLASH_NB_OF_PAGES);
+#endif
 #endif
 
 extern const char infoUf2File[];

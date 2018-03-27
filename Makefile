@@ -27,7 +27,7 @@ CFLAGS = $(COMMON_FLAGS) \
 $(WFLAGS)
 
 ifeq ($(CHIP_FAMILY), samd21)
-LINKER_SCRIPT=./lib/samd21/samd21a/gcc/gcc/samd21j18a_flash.ld
+LINKER_SCRIPT=./lib/samd21/samd21a/gcc/gcc/samd21e18a_flash.ld
 BOOTLOADER_SIZE=8192
 endif
 

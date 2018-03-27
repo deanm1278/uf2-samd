@@ -107,6 +107,7 @@ static void check_start_application(void) {
         return;
     }
 
+#if 0
 #if USE_SINGLE_RESET
     if (SINGLE_RESET()) {
         if (RESET_CONTROLLER->RCAUSE.bit.POR ||
@@ -119,6 +120,7 @@ static void check_start_application(void) {
             return;
         }
     }
+#endif
 #endif
 
     if (RESET_CONTROLLER->RCAUSE.bit.POR) {
@@ -218,7 +220,7 @@ int main(void) {
     /* System initialization */
     system_init();
 
-    boot_bfin();
+    //boot_bfin();
 
     __DMB();
     __enable_irq();
