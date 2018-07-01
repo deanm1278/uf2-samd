@@ -50,6 +50,9 @@
 #define W25Q16BV_CMD_JEDECID        0x9F   // JEDEC ID
 #define W25Q16BV_CMD_READUNIQUEID   0x4B   // Read Unique ID
 
+#define W25Q128FV_BLOCKS 255
+#define W25Q128FV_BLOCKSIZE 65536
+
 extern uint8_t transferDataSPI( Sercom * sercom, uint8_t data) ;
 extern bool isBufferOverflowErrorSPI( Sercom * sercom ) ;
 extern bool isDataRegisterEmptySPI( Sercom * sercom ) ;
@@ -83,7 +86,45 @@ void write_enable (bool enable)
   PINOP(SPI_FLASH_SS, OUTSET);
 }
 
+void erase_block (uint32_t blockNumber)
+{
+  // Make sure the address is valid
+  if (blockNumber >= W25Q128FV_BLOCKS) {
+    return;
+  }  
+
+  // Wait until the device is ready or a timeout occurs
+  while (flash_read_status() & SPIFLASH_STAT_BUSY);
+
+  // Make sure the chip is write enabled
+  write_enable(1);
+
+  // Make sure the write enable latch is actually set
+  uint8_t status;
+  status = flash_read_status();
+  if (!(status & SPIFLASH_STAT_WRTEN))  {
+    // Throw a write protection error (write enable latch not set)
+    return;
+  }
+
+  // Send the erase sector command
+  uint32_t address = blockNumber * W25Q128FV_BLOCKSIZE;
+  PINOP(SPI_FLASH_SS, OUTCLR);
+  spiwrite(W25Q16BV_CMD_BLOCKERASE64); 
+  spiwrite((address >> 16) & 0xFF);     // address upper 8
+  spiwrite((address >> 8) & 0xFF);      // address mid 8
+  spiwrite(address & 0xFF);             // address lower 8
+  PINOP(SPI_FLASH_SS, OUTSET);
+
+  // Wait until the busy bit is cleared before exiting
+  // This can take up to 2s according to the datasheet
+  while (flash_read_status() & SPIFLASH_STAT_BUSY);
+
+  return;
+}
+
 void flash_erase_to_end(uint32_t *start_address) {
+#if 0
     //this erases the whole chip regardless of address
     (void)start_address;
 
@@ -100,6 +141,13 @@ void flash_erase_to_end(uint32_t *start_address) {
     // Wait until the busy bit is cleared before exiting
     // This can take up to 10 seconds according to the datasheet!
     while (flash_read_status() & SPIFLASH_STAT_BUSY);
+#else
+    //lets actually erase a few blocks here. I think it times out
+    (void)start_address;
+    for(int i=0; i<24; i++){
+      erase_block(i);
+    }
+#endif
 
 }
 
